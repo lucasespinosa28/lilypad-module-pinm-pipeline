@@ -10,6 +10,7 @@ from urllib import request, parse
 import time
 import subprocess
 import logging
+import random
 
 def run_comfyui():
     global comfyui_thread
@@ -32,7 +33,7 @@ KSAMPLER_NAMES = ["euler", "euler_ancestral", "heun", "heunpp2","dpm_2", "dpm_2_
 SCHEDULER_NAMES = ["normal", "karras", "exponential", "sgm_uniform", "simple", "ddim_uniform"]
 
 timeout = 30 # If ComfyUI doesn't start within this many seconds, we'll give up
-default_steps = 50 # Default number of steps
+default_steps = 40 # Default number of steps
 batching = 1 # Default batch size
 
 # Run ComfyUI in a subprocess.
@@ -102,16 +103,16 @@ def queue_prompt(prompt_workflow):
 prompt_workflow = json.load(open('workflow.json'))
 
 # Get prompt from $PROMPT, falling back to "question mark floating in space" if not set
-prompt = os.environ.get("PROMPT") or "question mark floating in space"
+prompt = os.environ.get("PROMPT") or "avatar vector illustration of a blue corgi furry robot colorful hair and colorful fur cyberpunk vibes"
 
 # Get seed from $SEED, falling back to 42 if not set
-seed = os.environ.get("SEED") or "42"
+seed = os.environ.get("SEED") or random.randint(42,4294967295)
 
 # Get size from $SIZE, falling back to 1024 if not set
 # Valid sizes are 512, 768 and 1024.
-size = os.environ.get("SIZE") or "1024"
-if size not in ["512", "768", "1024", "2048"]:
-    print(f"Invalid size {size}. Must be one of 512, 768, 1024, 2048.")
+size = os.environ.get("SIZE") or "512"
+if size not in ["512"]:
+    print(f"Invalid size {size}. Must be one of 512")
     stop_comfyui()
     sys.exit(1)
 
@@ -149,7 +150,7 @@ chkpoint_loader_node = prompt_workflow["4"]
 prompt_pos_node = prompt_workflow["6"]
 empty_latent_img_node = prompt_workflow["5"]
 ksampler_node = prompt_workflow["3"]
-save_image_node = prompt_workflow["9"]
+save_image_node = prompt_workflow["40"]
 
 # set image dimensions and batch size in EmptyLatentImage node
 empty_latent_img_node["inputs"]["width"] = size
@@ -160,8 +161,8 @@ empty_latent_img_node["inputs"]["batch_size"] = batching
 prompt_pos_node["inputs"]["text"] = prompt
 
 # set the seed in KSampler node
+print(f"Seed: ({seed}).=====+++++++++++++++++++++==========================")
 ksampler_node["inputs"]["seed"] = seed
-
 # set the steps in KSampler node
 ksampler_node["inputs"]["steps"] = steps
 

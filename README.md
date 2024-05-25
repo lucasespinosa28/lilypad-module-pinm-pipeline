@@ -1,6 +1,6 @@
 # SDXL Pipeline for Lilypad and Docker 🐋
 Based on ComfyUI, the SDXL Pipeline modules for Lilypad allow you generate images on Lilypad using Stable Diffusion XL and related models.
-
+https://civitai.com/models/104451/post-it-note-mix?modelVersionId=220563
 They supports both the Refiner and Base versions of SDXL v0.9 and v1.0.
 
 # Usage
